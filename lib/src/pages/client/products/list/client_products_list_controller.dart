@@ -41,6 +41,9 @@ class ClientProductsListController{
   void logout(){
     _sharedPref.logout(context, user.id);
   }
+  void goToOrderListPage(){
+    Navigator.pushNamed(context, 'client/orders/list');
+  }
   void openDrawer(){
     key.currentState.openDrawer();
   }
