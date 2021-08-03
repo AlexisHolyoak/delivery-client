@@ -1,17 +1,22 @@
-import 'package:delivery/src/pages/client/address/create/client_address_create_controller.dart';
-import 'package:delivery/src/pages/client/address/map/client_address_map_controller.dart';
-import 'package:delivery/src/utils/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_delivery_udemy/src/pages/client/address/list/client_address_list_controller.dart';
+import 'package:flutter_delivery_udemy/src/pages/client/address/map/client_address_map_controller.dart';
+import 'package:flutter_delivery_udemy/src/utils/my_colors.dart';
+import 'package:flutter_delivery_udemy/src/widgets/no_data_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ClientAddressMapPage extends StatefulWidget {
+  const ClientAddressMapPage({Key key}) : super(key: key);
+
   @override
   _ClientAddressMapPageState createState() => _ClientAddressMapPageState();
 }
 
 class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
-  ClientAddressMapController _con=new ClientAddressMapController();
+
+  ClientAddressMapController _con = new ClientAddressMapController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -20,11 +25,12 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       _con.init(context, refresh);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ubica tu dirección en el mapa'),
+        title: Text('Ubica tu direccion en el mapa'),
       ),
       body: Stack(
         children: [
@@ -34,8 +40,8 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
             child: _iconMyLocation(),
           ),
           Container(
+            margin: EdgeInsets.only(top: 30),
             alignment: Alignment.topCenter,
-            margin: EdgeInsets.only(top: 50),
             child: _cardAddress(),
           ),
           Container(
@@ -46,16 +52,14 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       ),
     );
   }
-  Widget _iconMyLocation(){
-    return Image.asset('assets/img/my_location.png', width: 65, height: 65,);
-  }
-  Widget _buttonAccept(){
+
+  Widget _buttonAccept() {
     return Container(
       height: 50,
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 30, horizontal: 70),
       child: ElevatedButton(
-        onPressed: _con.selectReferencePoint,
+        onPressed: _con.selectRefPoint,
         child: Text(
             'SELECCIONAR ESTE PUNTO'
         ),
@@ -68,7 +72,8 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       ),
     );
   }
-  Widget _cardAddress(){
+
+  Widget _cardAddress() {
     return Container(
       child: Card(
         color: Colors.grey[800],
@@ -76,9 +81,9 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
           borderRadius: BorderRadius.circular(20)
         ),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Text(
-              _con.addressName??'',
+            _con.addressName ?? '',
             style: TextStyle(
               color: Colors.white,
               fontSize: 14,
@@ -89,24 +94,32 @@ class _ClientAddressMapPageState extends State<ClientAddressMapPage> {
       ),
     );
   }
-  Widget _googleMaps(){
-    return  GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _con.initialPosition,
-        onMapCreated: _con.onMapCreated,
-        myLocationButtonEnabled: false,
-        myLocationEnabled: false,
-        onCameraMove: (position){
-          _con.initialPosition =  position;
-        },
-        onCameraIdle: () async{
-          await _con.setLocationDraggableInfo();
-        },
+
+  Widget _iconMyLocation() {
+    return Image.asset(
+      'assets/img/my_location.png',
+      width: 65,
+      height: 65,
     );
   }
-  void refresh(){
-    setState(() {
 
-    });
+  Widget _googleMaps() {
+    return GoogleMap(
+      mapType: MapType.normal,
+      initialCameraPosition: _con.initialPosition,
+      onMapCreated: _con.onMapCreated,
+      myLocationButtonEnabled: false,
+      myLocationEnabled: false,
+      onCameraMove: (position) {
+        _con.initialPosition = position;
+      },
+      onCameraIdle: () async {
+        await _con.setLocationDraggableInfo();
+      },
+    );
+  }
+
+  void refresh() {
+    setState(() {});
   }
 }

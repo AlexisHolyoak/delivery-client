@@ -1,123 +1,144 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
 
-import 'package:delivery/src/models/response_api.dart';
-import 'package:delivery/src/models/user.dart';
-import 'package:delivery/src/provider/users_provider.dart';
-import 'package:delivery/src/utils/my_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_delivery_udemy/src/models/response_api.dart';
+import 'package:flutter_delivery_udemy/src/models/user.dart';
+import 'package:flutter_delivery_udemy/src/provider/users_provider.dart';
+import 'package:flutter_delivery_udemy/src/utils/my_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
-class RegisterController{
+
+class RegisterController {
+
   BuildContext context;
-  TextEditingController emailController=new TextEditingController();
-  TextEditingController nombresController=new TextEditingController();
-  TextEditingController apellidosController=new TextEditingController();
-  TextEditingController passwordController=new TextEditingController();
-  TextEditingController validatePasswordController=new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController lastnameController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+  TextEditingController confirmPassswordController = new TextEditingController();
+
+  UsersProvider usersProvider = new UsersProvider();
+
   PickedFile pickedFile;
   File imageFile;
   Function refresh;
-  UsersProvider usersProvider =  new UsersProvider();
+  
   ProgressDialog _progressDialog;
-  bool isEnable= true;
 
-  Future init(BuildContext context, Function refresh){
-    this.context=context;
+  bool isEnable = true;
+
+  Future init(BuildContext context, Function refresh) {
+    this.context = context;
     this.refresh = refresh;
     usersProvider.init(context);
     _progressDialog = ProgressDialog(context: context);
   }
-  // register a user
-  void register() async{
-    String email= emailController.text.trim();
-    String nombres= nombresController.text;
-    String apellidos= apellidosController.text;
-    String password= passwordController.text.trim();
-    String validatePassword = validatePasswordController.text.trim();
-    String phone = phoneController.text.trim();
 
-    if(email.isEmpty || nombres.isEmpty || apellidos.isEmpty || password.isEmpty || validatePassword.isEmpty || phone.isEmpty){
+  void register() async {
+    String email = emailController.text.trim();
+    String name = nameController.text;
+    String lastname = lastnameController.text;
+    String phone = phoneController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPassswordController.text.trim();
+
+    if (email.isEmpty || name.isEmpty || lastname.isEmpty || phone.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       MySnackbar.show(context, 'Debes ingresar todos los campos');
       return;
     }
-    if(validatePassword!= password){
+
+    if (confirmPassword != password) {
       MySnackbar.show(context, 'Las contraseñas no coinciden');
       return;
     }
-    if(password.length<6){
-      MySnackbar.show(context, 'La contraseña debe tener almenos 6 caracteres');
+
+    if (password.length < 6) {
+      MySnackbar.show(context, 'Las contraseña debe tener al menos 6 caracteres');
       return;
     }
-    if(imageFile == null){
+
+    if (imageFile == null) {
       MySnackbar.show(context, 'Selecciona una imagen');
       return;
     }
-    // opening dialog
-    _progressDialog.show(max: 100, msg: "Espere un momento...");
-    // disable register button
-    isEnable= false;
-    // init user
-    User user= new User(
+
+    _progressDialog.show(max: 100, msg: 'Espere un momento...');
+    isEnable = false;
+
+    User user = new User(
       email: email,
-      name: nombres,
-      lastname: apellidos,
-      password: password,
+      name: name,
+      lastname: lastname,
       phone: phone,
+      password: password
     );
-    // create a user with an image
+
     Stream stream = await usersProvider.createWithImage(user, imageFile);
     stream.listen((res) {
-      // closing dialog
+
       _progressDialog.close();
 
+      // ResponseApi responseApi = await usersProvider.create(user);
       ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
+      print('RESPUESTA: ${responseApi.toJson()}');
       MySnackbar.show(context, responseApi.message);
-      if(responseApi.success){
-        Future.delayed(Duration(seconds: 3),(){
+
+      if (responseApi.success) {
+        Future.delayed(Duration(seconds: 3), () {
           Navigator.pushReplacementNamed(context, 'login');
         });
-      }else{
-        // enable register button after failure
+      }
+      else {
         isEnable = true;
       }
     });
   }
-  // back button
-  void back(){
-    Navigator.pop(context);
-  }
-  // select an image
-  Future selectImage(ImageSource imageSource) async{
-    pickedFile=await ImagePicker().getImage(source: imageSource);
-    if(pickedFile!=null){
+
+  Future selectImage(ImageSource imageSource) async {
+    pickedFile = await ImagePicker().getImage(source: imageSource);
+    if (pickedFile != null) {
       imageFile = File(pickedFile.path);
     }
     Navigator.pop(context);
     refresh();
   }
-  // show an alert dialog
-  void showAlertDialog(){
+
+  void showAlertDialog() {
     Widget galleryButton = ElevatedButton(
-        onPressed: (){
+        onPressed: () {
           selectImage(ImageSource.gallery);
         },
-        child: Text('GALERIA'));
+        child: Text('GALERIA')
+    );
+
     Widget cameraButton = ElevatedButton(
-        onPressed: (){
+        onPressed: () {
           selectImage(ImageSource.camera);
         },
-        child: Text('CAMARA'));
+        child: Text('CAMARA')
+    );
+
     AlertDialog alertDialog = AlertDialog(
-      title: Text('Selecciona tu imágen'),
+      title: Text('Selecciona tu imagen'),
       actions: [
         galleryButton,
         cameraButton
       ],
     );
-    showDialog(context: context, builder: (BuildContext context){
-      return alertDialog;
-    });
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      }
+    );
   }
+
+  void back() {
+    Navigator.pop(context);
+  }
+
+
 }

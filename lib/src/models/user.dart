@@ -1,70 +1,69 @@
-
 import 'dart:convert';
 
-import 'package:delivery/src/models/role.dart';
+import 'package:flutter_delivery_udemy/src/models/rol.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toJson());
 
 class User {
-  //constructor
-  User({
-    this.id,
-    this.email,
-    this.name,
-    this.lastname,
-    this.phone,
-    this.image,
-    this.sessionToken,
-    this.password,
-    this.roles
-  });
-  //declaration
+
   String id;
-  String email;
   String name;
   String lastname;
+  String email;
   String phone;
-  String image;
-  String sessionToken;
   String password;
+  String sessionToken;
+  String notificationToken;
+  String image;
+  List<Rol> roles = [];
+  List<User> toList = [];
 
-  List<Role> roles =[];
-  List<User> toList =[];
-  //receive json and convert to user
+  User({
+    this.id,
+    this.name,
+    this.lastname,
+    this.email,
+    this.phone,
+    this.password,
+    this.sessionToken,
+    this.notificationToken,
+    this.image,
+    this.roles
+  });
+
   factory User.fromJson(Map<String, dynamic> json) => User(
-    //convert always to string if its int
-    id: json["id"] is int? json["id"].toString(): json["id"],
-    email: json["email"],
+    id: json["id"] is int ? json['id'].toString() : json["id"],
     name: json["name"],
     lastname: json["lastname"],
+    email: json["email"],
     phone: json["phone"],
-    image: json["image"],
-    sessionToken: json["session_token"],
     password: json["password"],
-    //In case role is null then return empty array, otherwise: create list role. If it comes empty then return null
-    roles: json["roles"] == null ? [] : List<Role>.from(json['roles'].map(
-        (model)=>Role.fromJson(model)
-    )) ?? [],
+    sessionToken: json["session_token"],
+    notificationToken: json["notification_token"],
+    image: json["image"],
+    roles: json["roles"] == null ? [] : List<Rol>.from(json['roles'].map((model) => Rol.fromJson(model))) ?? [],
   );
-  //get user and convert to json
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "email": email,
-    "name": name,
-    "lastname": lastname,
-    "phone": phone,
-    "image": image,
-    "session_token": sessionToken,
-    "password": password,
-    "roles": roles
-  };
-  User.fromJsonList(List<dynamic> jsonList){
-    if(jsonList == null) return;
+
+  User.fromJsonList(List<dynamic> jsonList) {
+    if (jsonList == null) return;
     jsonList.forEach((item) {
       User user = User.fromJson(item);
       toList.add(user);
     });
   }
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "lastname": lastname,
+    "email": email,
+    "phone": phone,
+    "password": password,
+    "session_token": sessionToken,
+    "notification_token": notificationToken,
+    "image": image,
+    "roles": roles,
+  };
 }

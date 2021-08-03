@@ -1,120 +1,130 @@
-
-import 'package:delivery/src/pages/client/update/client_update_controller.dart';
-import 'package:delivery/src/pages/register/register_controller.dart';
-import 'package:delivery/src/utils/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_delivery_udemy/src/pages/client/update/client_update_controller.dart';
+import 'package:flutter_delivery_udemy/src/pages/register/register_controller.dart';
+import 'package:flutter_delivery_udemy/src/utils/my_colors.dart';
 
 class ClientUpdatePage extends StatefulWidget {
+  const ClientUpdatePage({Key key}) : super(key: key);
+
   @override
   _ClientUpdatePageState createState() => _ClientUpdatePageState();
 }
 
 class _ClientUpdatePageState extends State<ClientUpdatePage> {
+
   ClientUpdateController _con = new ClientUpdateController();
+
   @override
   void initState() {
-
+    // TODO: implement initState
     super.initState();
+
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       _con.init(context, refresh);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Editar perfil'),
       ),
-        body: Container(
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 50),
-                _imageUser(),
-                SizedBox(height: 30,),
-                _textFieldNombres(),
-                _textFieldApellidos(),
-                _textFieldTelefono()
-              ],
-            ),
+      body: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 50),
+              _imageUser(),
+              SizedBox(height: 30),
+              _textFieldName(),
+              _textFieldLastName(),
+              _textFieldPhone(),
+            ],
           ),
-        ),
-      bottomNavigationBar: _buttonUpdate(),
+        )
+      ),
+      bottomNavigationBar: _buttonLogin(),
     );
   }
-  Widget _imageUser(){
+
+  Widget _imageUser() {
     return GestureDetector(
       onTap: _con.showAlertDialog,
       child: CircleAvatar(
-        backgroundImage:
-            _con.imageFile!=null ? FileImage(_con.imageFile)
-            : _con.user?.image!=null ? NetworkImage(_con.user?.image)
-            : AssetImage('assets/img/user_profile_2.png'),
+        backgroundImage: _con.imageFile != null
+            ? FileImage(_con.imageFile)
+            : _con.user?.image != null
+              ? NetworkImage(_con.user?.image)
+              : AssetImage('assets/img/user_profile_2.png'),
         radius: 60,
         backgroundColor: Colors.grey[200],
       ),
     );
   }
-  Widget _textFieldNombres(){
+
+  Widget _textFieldName() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
       decoration: BoxDecoration(
-          color: MyColors.primaryOppacityColor,
+          color: MyColors.primaryOpacityColor,
           borderRadius: BorderRadius.circular(30)
       ),
       child: TextField(
-        controller: _con.nombresController,
+        controller: _con.nameController,
         decoration: InputDecoration(
-            hintText: 'Nombres',
+            hintText: 'Nombre',
             border: InputBorder.none,
             contentPadding: EdgeInsets.all(15),
             hintStyle: TextStyle(
                 color: MyColors.primaryColorDark
             ),
             prefixIcon: Icon(
-                Icons.person,
-                color: MyColors.primaryColor
+              Icons.person,
+              color: MyColors.primaryColor,
             )
         ),
       ),
     );
   }
-  Widget _textFieldApellidos(){
+
+  Widget _textFieldLastName() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
       decoration: BoxDecoration(
-          color: MyColors.primaryOppacityColor,
+          color: MyColors.primaryOpacityColor,
           borderRadius: BorderRadius.circular(30)
       ),
       child: TextField(
-        controller: _con.apellidosController,
+        controller: _con.lastnameController,
         decoration: InputDecoration(
-            hintText: 'Apellidos',
+            hintText: 'Apellido',
             border: InputBorder.none,
             contentPadding: EdgeInsets.all(15),
             hintStyle: TextStyle(
                 color: MyColors.primaryColorDark
             ),
             prefixIcon: Icon(
-                Icons.person_outline,
-                color: MyColors.primaryColor
+              Icons.person_outline,
+              color: MyColors.primaryColor,
             )
         ),
       ),
     );
   }
-  Widget _textFieldTelefono(){
+
+  Widget _textFieldPhone() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
       decoration: BoxDecoration(
-          color: MyColors.primaryOppacityColor,
+          color: MyColors.primaryOpacityColor,
           borderRadius: BorderRadius.circular(30)
       ),
       child: TextField(
-        keyboardType: TextInputType.phone,
         controller: _con.phoneController,
+        keyboardType: TextInputType.phone,
         decoration: InputDecoration(
             hintText: 'Telefono',
             border: InputBorder.none,
@@ -123,20 +133,22 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
                 color: MyColors.primaryColorDark
             ),
             prefixIcon: Icon(
-                Icons.phone,
-                color: MyColors.primaryColor
+              Icons.phone,
+              color: MyColors.primaryColor,
             )
         ),
       ),
     );
   }
-  Widget _buttonUpdate(){
+
+
+  Widget _buttonLogin() {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+      margin: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
       child: ElevatedButton(
-        onPressed: _con.isEnable? _con.update: null,
-        child: Text('Actualizar'),
+        onPressed: _con.isEnable ? _con.update : null,
+        child: Text('ACTUALIZAR PERFIL'),
         style: ElevatedButton.styleFrom(
             primary: MyColors.primaryColor,
             shape: RoundedRectangleBorder(
@@ -147,7 +159,9 @@ class _ClientUpdatePageState extends State<ClientUpdatePage> {
       ),
     );
   }
-  void refresh(){
+
+
+  void refresh() {
     setState(() {
 
     });

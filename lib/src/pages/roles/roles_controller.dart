@@ -1,19 +1,26 @@
-import 'package:delivery/src/models/user.dart';
-import 'package:delivery/src/utils/shared_pref.dart';
 import 'package:flutter/material.dart';
-class RolesController{
+import 'package:flutter_delivery_udemy/src/models/user.dart';
+import 'package:flutter_delivery_udemy/src/utils/shared_pref.dart';
+
+class RolesController {
+
   BuildContext context;
-  User user;
-  SharedPref sharedPref= new SharedPref();
   Function refresh;
-  Future init(BuildContext context, refresh) async{
-    this.context= context;
-    this.refresh=refresh;
-    //getting user from session
-    user=User.fromJson(await sharedPref.read('user'));
+
+  User user;
+  SharedPref sharedPref = new SharedPref();
+
+  Future init(BuildContext context, Function refresh) async {
+    this.context = context;
+    this.refresh = refresh;
+
+    // OBTENER EL USUARIO DE SESION
+    user = User.fromJson(await sharedPref.read('user')); // PODRIA TARDAR UN TIEMPO EN OBTENERSE
     refresh();
   }
-  void goToPage(String route){
+
+  void goToPage(String route) {
     Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
   }
+
 }

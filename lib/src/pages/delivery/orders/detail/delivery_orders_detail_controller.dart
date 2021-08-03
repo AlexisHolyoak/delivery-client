@@ -1,58 +1,70 @@
-import 'package:delivery/src/models/order.dart';
-import 'package:delivery/src/models/product.dart';
-import 'package:delivery/src/models/response_api.dart';
-import 'package:delivery/src/models/user.dart';
-import 'package:delivery/src/provider/orders_provider.dart';
-import 'package:delivery/src/provider/users_provider.dart';
-import 'package:delivery/src/utils/my_snackbar.dart';
-import 'package:delivery/src/utils/shared_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_delivery_udemy/src/models/order.dart';
+import 'package:flutter_delivery_udemy/src/models/product.dart';
+import 'package:flutter_delivery_udemy/src/models/response_api.dart';
+import 'package:flutter_delivery_udemy/src/models/user.dart';
+import 'package:flutter_delivery_udemy/src/provider/orders_provider.dart';
+import 'package:flutter_delivery_udemy/src/provider/users_provider.dart';
+import 'package:flutter_delivery_udemy/src/utils/my_snackbar.dart';
+import 'package:flutter_delivery_udemy/src/utils/shared_pref.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-class DeliveryOrdersDetailController{
+import 'package:url_launcher/url_launcher.dart';
+
+class DeliveryOrdersDetailController {
+
   BuildContext context;
   Function refresh;
+
   Product product;
-  int counter=1;
+
+  int counter = 1;
   double productPrice;
-  double total =0;
+
+  SharedPref _sharedPref = new SharedPref();
+
+  double total = 0;
   Order order;
-  // for delivery men
-  List<User> users;
-  String idDelivery;
+
+  User user;
+  List<User> users = [];
   UsersProvider _usersProvider = new UsersProvider();
   OrdersProvider _ordersProvider = new OrdersProvider();
-  SharedPref _sharedPref= new  SharedPref();
-  User user;
-  Future init(BuildContext context, Function refresh, Order order) async{
+  String idDelivery;
+
+  Future init(BuildContext context, Function refresh, Order order) async {
     this.context = context;
     this.refresh = refresh;
-    this.order=order;
-    user= User.fromJson(await _sharedPref.read('user'));
+    this.order = order;
+    user = User.fromJson(await _sharedPref.read('user'));
     _usersProvider.init(context, sessionUser: user);
     _ordersProvider.init(context, user);
     getTotal();
     getUsers();
     refresh();
   }
-  void updateOrder() async{
-    if(order.status =='DESPACHADO'){
-      ResponseApi  responseApi = await _ordersProvider.updateToOnTheWay(order);
+
+  void updateOrder() async {
+    if (order.status == 'DESPACHADO') {
+      ResponseApi responseApi = await _ordersProvider.updateToOnTheWay(order);
       Fluttertoast.showToast(msg: responseApi.message, toastLength: Toast.LENGTH_LONG);
-      if(responseApi.success){
+      if (responseApi.success) {
         Navigator.pushNamed(context, 'delivery/orders/map', arguments: order.toJson());
       }
-    }else{
+    }
+    else {
       Navigator.pushNamed(context, 'delivery/orders/map', arguments: order.toJson());
     }
   }
-  void getUsers()async{
+
+  void getUsers() async {
     users = await _usersProvider.getDeliveryMen();
     refresh();
   }
-  void getTotal(){
-    total =0;
+
+  void getTotal() {
+    total = 0;
     order.products.forEach((product) {
-      total=total+(product.quantity*product.price);
+      total = total + (product.price * product.quantity);
     });
     refresh();
   }

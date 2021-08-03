@@ -1,6 +1,6 @@
-# delivery
+# flutter_delivery_udemy
 
-A new Flutter application.
+Este es un curso de UDEMY donde desarrollaremos una app Delivery
 
 ## Getting Started
 

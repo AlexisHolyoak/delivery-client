@@ -1,4 +1,4 @@
-package com.example.delivery
+package com.optic.flutter_delivery_udemy
 
 import io.flutter.embedding.android.FlutterActivity
 

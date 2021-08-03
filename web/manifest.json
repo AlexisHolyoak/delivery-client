@@ -1,11 +1,11 @@
 {
-    "name": "delivery",
-    "short_name": "delivery",
+    "name": "flutter_delivery_udemy",
+    "short_name": "flutter_delivery_udemy",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter application.",
+    "description": "Este es un curso de UDEMY donde desarrollaremos una app Delivery",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
